@@ -6,3 +6,17 @@ edition = "2024"
 [dependencies]
 clap = { version = "4.5.40", features = ["derive"] }
 serde = { version = "1.0.219", features = ["derive"] }
+
+[profile.dev]
+opt-level = 0
+overflow-checks = false
+
+[profile.release]
+opt-level = 3
+overflow-checks = true
+
+[profile.dev.package."*"]
+opt-level = "z"
+debug-assertions = false
+overflow-checks = false
+debug = false
