@@ -1,31 +1,27 @@
-use std::{ io, collections::HashMap };
-use serde::{ Serialize, Deserialize };
+mod libpdb;
 
-#[derive(Serialize, Deserialize, Debug)]
-struct KvStore {
-    store: HashMap<String, String>,
-}
+use std::io;
+use clap::Parser;
+use libpdb::kvstore::KvStore;
 
-#[allow(dead_code)]
-impl KvStore {
-    fn new() -> Self {
-        Self { store: HashMap::new() }
-    }
+#[derive(Parser, Debug)]
+#[command(version, about, long_about = None)]
+struct Args {
+	#[arg(short, long)]
+	get: Option<String>,
 
-    fn set(&mut self, key: String, value: String) {
-        self.store.insert(key, value);
-    }
+	#[arg(short, long)]
+	set: Option<String>,
 
-    fn get(&self, key: &str) -> Option<&String> {
-        self.store.get(key)
-    }
-
-    fn delete(&mut self, key: &str) -> Option<String> {
-        self.store.remove(key)
-    }
+    file: String
 }
 
 fn main() -> io::Result<()> {
+	let args = Args::parse();
+
+	#[allow(unused_mut, unused_variables)]
+	let mut db = KvStore::new(args.file);
+
 	Ok(())
 }
 
@@ -35,7 +31,7 @@ mod tests {
 
     #[test]
     fn test_set_get_delete() {
-        let mut db = KvStore::new();
+        let mut db = KvStore::new("test.pdb".to_string());
 
         db.set("foo".to_string(), "bar".to_string());
         db.set("baz".to_string(), "qux".to_string());
